@@ -21,6 +21,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void create(Book book) {
+        System.out.println(book);
         jdbcTemplate.update(
                 "INSERT INTO books (isbn, title, author_id) VALUES (?, ?, ?)",
                 book.getIsbn(),
@@ -45,6 +46,22 @@ public class BookDaoImpl implements BookDao {
         return jdbcTemplate.query(
                 "SELECT isbn, title, author_id from BOOKS",
                 new BookRowMapper()
+        );
+    }
+
+    @Override
+    public void update(String isbn, Book book) {
+        jdbcTemplate.update(
+                "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                    book.getIsbn(), book.getTitle(), book.getAuthorId(), isbn
+                );
+    }
+
+    @Override
+    public void delete(String isbn) {
+        jdbcTemplate.update(
+                "DELETE FROM books WHERE isbn = ?",
+                isbn
         );
     }
 

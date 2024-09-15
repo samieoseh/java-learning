@@ -40,6 +40,20 @@ public class AuthorDaoImpl  implements AuthorDao  {
                 );
     }
 
+    public void update(long authorId, Author author) {
+        jdbcTemplate.update("UPDATE authors SET name = ?, age = ? WHERE id = ?",
+                "John Doe", 89, authorId);
+
+    }
+
+    @Override
+    public void delete(Long authorId) {
+        jdbcTemplate.update(
+                "DELETE FROM authors WHERE id = ?",
+                authorId
+        );
+    }
+
     public static class AuthorRowMapper implements RowMapper<Author> {
 
         @Override
