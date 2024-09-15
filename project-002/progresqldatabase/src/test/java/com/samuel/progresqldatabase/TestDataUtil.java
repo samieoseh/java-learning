@@ -42,4 +42,17 @@ public final class TestDataUtil {
         return authors;
     }
 
+    public static List<Book> createMultipleTestBooks(int numberOfBooks, Author author) {
+        List<Book> books = new ArrayList<>();
+
+        for (long i = 1; i <= numberOfBooks; i++) {
+            books.add(Book.builder()
+                    .isbn("isbn " + i)
+                    .title("Title " + i)
+                    .authorId(author.getId())
+                    .build());
+        }
+
+        return books;
+    }
 }
