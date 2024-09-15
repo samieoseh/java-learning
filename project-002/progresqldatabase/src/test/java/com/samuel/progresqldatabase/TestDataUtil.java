@@ -19,11 +19,11 @@ public final class TestDataUtil {
 
     }
 
-    public static Book createTestBook() {
+    public static Book createTestBook(Author author) {
         return Book.builder()
                 .isbn("978-1-2345-6789-0")
                 .title("The Shadow in the Attic")
-                .authorId(1L)
+                .author(author)
                 .build();
     }
 
@@ -49,7 +49,7 @@ public final class TestDataUtil {
             books.add(Book.builder()
                     .isbn("isbn " + i)
                     .title("Title " + i)
-                    .authorId(author.getId())
+                    .author(author)
                     .build());
         }
 
