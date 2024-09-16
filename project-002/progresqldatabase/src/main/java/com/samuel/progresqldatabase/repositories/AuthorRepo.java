@@ -1,17 +1,15 @@
 package com.samuel.progresqldatabase.repositories;
 
-import com.samuel.progresqldatabase.domain.Author;
+import com.samuel.progresqldatabase.domain.entities.AuthorEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorRepo extends CrudRepository<Author, Long> {
+public interface AuthorRepo extends CrudRepository<AuthorEntity, Long> {
 
-    Iterable<Author> ageLessThan(int age);
+    Iterable<AuthorEntity> ageLessThan(int age);
 
-    Iterable<Author> ageGreaterThan(int age);
+    Iterable<AuthorEntity> ageGreaterThan(int age);
 
-    @Query("SELECT a FROM Author a where a.age > ?1")
-    Iterable<Author> findAgeGreaterThanBlah(int age);
 }
