@@ -15,6 +15,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -60,6 +63,51 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.name").value("Samuel Oseh")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(89)
+        );
+    }
+
+    @Test
+    public void testThatGetAuthorsSuccessfullyReturnsHttp201Created() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatGetAuthorsReturnsAllAuthors() throws  Exception {
+        List<AuthorEntity> authors = TestDataUtil.createMultipleTestAuthors(10);
+        List<AuthorEntity> authorsWithNullIds = authors.stream()
+                .peek(author -> {
+                    author.setId(null); // Set the ID to null
+                    // Return the modified author
+                })
+                .toList();
+
+        System.out.println(authorsWithNullIds);
+
+        for (AuthorEntity author: authorsWithNullIds) {
+            // convert object to json
+            String authorJson = objectMapper.writeValueAsString(author);
+
+            mockMvc.perform(
+                    MockMvcRequestBuilders.post("/authors")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(authorJson)
+            );
+        }
+
+        // get all objects
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].name").value("Author 1")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].age").value(1)
         );
     }
 }

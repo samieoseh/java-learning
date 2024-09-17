@@ -6,10 +6,10 @@ import com.samuel.progresqldatabase.mappers.Mapper;
 import com.samuel.progresqldatabase.services.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class BookCtrl {
@@ -27,5 +27,11 @@ public class BookCtrl {
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
         BookEntity savedBookEntity = bookService.createBook(isbn, bookEntity);
         return new ResponseEntity<>(bookMapper.mapTo(savedBookEntity), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/books")
+    public  ResponseEntity<List<BookDto>> getBooks() {
+        List<BookEntity> bookEntities = bookService.getBooks();
+        return new ResponseEntity<>(bookEntities.stream().map(bookMapper::mapTo).collect(Collectors.toList()), HttpStatus.OK);
     }
 }

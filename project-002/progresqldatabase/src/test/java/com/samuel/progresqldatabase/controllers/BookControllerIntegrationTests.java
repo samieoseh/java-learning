@@ -2,8 +2,11 @@ package com.samuel.progresqldatabase.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samuel.progresqldatabase.TestDataUtil;
+import com.samuel.progresqldatabase.domain.dto.AuthorDto;
 import com.samuel.progresqldatabase.domain.entities.AuthorEntity;
 import com.samuel.progresqldatabase.domain.entities.BookEntity;
+import com.samuel.progresqldatabase.services.AuthorService;
+import com.samuel.progresqldatabase.services.BookService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +25,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class BookControllerIntegrationTests {
     private MockMvc mockMvc;
+    private  AuthorService authorService;
+    private BookService bookService;
     private ObjectMapper objectMapper;
 
     @Autowired
-    public BookControllerIntegrationTests(MockMvc mockMvc) {
+    public BookControllerIntegrationTests(MockMvc mockMvc, BookService bookService, AuthorService authorService) {
         this.mockMvc = mockMvc;
+        this.bookService = bookService;
+        this.authorService = authorService;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -69,6 +76,38 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.title").value("The Shadow in the Attic")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.isbn").value("123-456-789")
+        );
+    }
+
+    @Test
+    public  void testThatGetBooksReturnsHttpStatus200Created() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(
+                        "/books"
+                )
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public  void testThatGetBooksSuccessfullyReturnAllBooks() throws Exception {
+        int numOfBooks = 10;
+        AuthorEntity author = TestDataUtil.createTestAuthor(1L);
+        authorService.createAuthor(author);
+        BookEntity bookEntity = TestDataUtil.createTestBook(author);
+
+        for (int num = 1; num < numOfBooks; num++) {
+            bookService.createBook("123-456-789-" + num, bookEntity);
+        }
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(
+                        "/books"
+                )
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].isbn").value("123-456-789-1")
         );
     }
 }
