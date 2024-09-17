@@ -1,4 +1,4 @@
-package com.samuel.progresqldatabase.domain;
+package com.samuel.progresqldatabase.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Book {
+public class BookDto {
     private String isbn;
     private  String title;
-    private Long authorId;
+    private AuthorDto author;
 }
-
-
