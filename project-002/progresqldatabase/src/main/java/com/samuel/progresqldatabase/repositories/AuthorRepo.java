@@ -6,10 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
+
 public interface AuthorRepo extends CrudRepository<AuthorEntity, Long> {
 
-    Iterable<AuthorEntity> ageLessThan(int age);
-
-    Iterable<AuthorEntity> ageGreaterThan(int age);
 
 }
